@@ -3,6 +3,9 @@
   "version": "0.0.0",
   "description": "Transmission stats exporter for influxdb",
   "main": "index.js",
+	"bin": {
+		"transmission-influx-exporter": "./index.js"
+	},
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
@@ -15,5 +18,8 @@
   "bugs": {
     "url": "https://github.com/jack828/TransmissionInfluxExporter/issues"
   },
-  "homepage": "https://github.com/jack828/TransmissionInfluxExporter#readme"
+  "homepage": "https://github.com/jack828/TransmissionInfluxExporter#readme",
+  "dependencies": {
+    "yargs": "^16.2.0"
+  }
 }
