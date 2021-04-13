@@ -3,9 +3,9 @@
   "version": "0.0.0",
   "description": "Transmission stats exporter for influxdb",
   "main": "index.js",
-	"bin": {
-		"transmission-influx-exporter": "./index.js"
-	},
+  "bin": {
+    "transmission-influx-exporter": "./index.js"
+  },
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
@@ -21,5 +21,11 @@
   "homepage": "https://github.com/jack828/TransmissionInfluxExporter#readme",
   "dependencies": {
     "yargs": "^16.2.0"
+  },
+  "devDependencies": {
+    "eslint": "^7.24.0",
+    "eslint-config-prettier": "^8.2.0",
+    "eslint-plugin-prettier": "^3.3.1",
+    "prettier": "^2.2.1"
   }
 }
