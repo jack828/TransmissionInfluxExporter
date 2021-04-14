@@ -21,6 +21,7 @@
   "homepage": "https://github.com/jack828/TransmissionInfluxExporter#readme",
   "type": "module",
   "dependencies": {
+    "transmission": "^0.4.10",
     "yargs": "^16.2.0"
   },
   "devDependencies": {
