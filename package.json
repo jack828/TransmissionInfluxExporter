@@ -19,6 +19,7 @@
     "url": "https://github.com/jack828/TransmissionInfluxExporter/issues"
   },
   "homepage": "https://github.com/jack828/TransmissionInfluxExporter#readme",
+  "type": "module",
   "dependencies": {
     "yargs": "^16.2.0"
   },
