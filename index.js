@@ -1,29 +1,52 @@
 /* eslint-disable no-console */
 import os from 'os'
-import yargs from 'yargs'
 import Transmission from 'transmission'
 import Influx from 'influx'
 
-const dbName = 'transmission'
+const {
+  TRANSMISSION_HOST = 'localhost',
+  TRANSMISSION_PORT = 9091,
+  TRANSMISSION_USERNAME,
+  TRANSMISSION_PASSWORD,
+  TRANSMISSION_USE_SSL,
+  TRANSMISSION_URL,
 
-const transmission = new Transmission({ host: 'transmission.local' })
+  DATABASE_NAME = 'transmission',
+  INFLUXDB_HOST = 'localhost',
+  INFLUXDB_PORT = 8086,
+  INFLUXDB_USERNAME,
+  INFLUXDB_PASSWORD
+} = process.env
+
+const transmission = new Transmission({
+  host: TRANSMISSION_HOST,
+  port: TRANSMISSION_PORT,
+  username: TRANSMISSION_USERNAME,
+  password: TRANSMISSION_PASSWORD,
+  ssl: !!TRANSMISSION_USE_SSL,
+  url: TRANSMISSION_URL
+})
+
 const influx = new Influx.InfluxDB({
-  host: 'grafana.local',
-  database: dbName
+  database: DATABASE_NAME,
+  host: INFLUXDB_HOST,
+  port: INFLUXDB_PORT,
+  username: INFLUXDB_USERNAME,
+  password: INFLUXDB_PASSWORD
 })
 
 const tags = { hostname: os.hostname() }
 
 const collectStats = async () => {
   const databases = await influx.getDatabaseNames()
-  if (!databases.includes(dbName)) {
-    await influx.createDatabase(dbName)
+  if (!databases.includes(DATABASE_NAME)) {
+    console.log(`Creating database "${DATABASE_NAME}"`)
+    await influx.createDatabase(DATABASE_NAME)
   }
-  console.log(await influx.getDatabaseNames())
+  console.log('Collecting session stats')
 
   transmission.sessionStats(async (error, stats) => {
     if (error) throw error
-    console.log(stats)
     const formatStats = ({
       uploadedBytes,
       downloadedBytes,
@@ -69,14 +92,12 @@ const collectStats = async () => {
         tags
       }
     ])
-    console.log('done stats')
+    console.log('Session stats collected')
 
+    console.log('Collecting torrent stats')
     transmission.get(async (error, r) => {
       if (error) throw error
       const { torrents } = r
-      console.dir(torrents[0], { depth: 1, colors: true })
-      // return
-      // eslint-disable-next-line
       await influx.writeMeasurement(
         'torrent',
         torrents.map(
@@ -108,8 +129,7 @@ const collectStats = async () => {
           })
         )
       )
-      console.log('done torrents')
-      // console.dir(r, { depth: null, colors: true })
+      console.log('Torrent stats collected')
     })
   })
 }

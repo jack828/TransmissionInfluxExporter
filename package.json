@@ -22,8 +22,7 @@
   "type": "module",
   "dependencies": {
     "influx": "^5.8.0",
-    "transmission": "^0.4.10",
-    "yargs": "^16.2.0"
+    "transmission": "^0.4.10"
   },
   "devDependencies": {
     "eslint": "^7.24.0",
