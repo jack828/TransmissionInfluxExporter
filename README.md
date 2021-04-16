@@ -54,7 +54,7 @@ Torrents come with extra tags.
 
 By Jack Burgess
 
-Heavily influenced by [metalmatze/transmission-exporter](https://github.com/metalmatze/transmission-exporter), if you want an exporter for Prometheus (written in Go) then _Go_ and check the project out!
+Heavily influenced by [metalmatze/transmission-exporter](https://github.com/metalmatze/transmission-exporter), if you want an exporter for Prometheus (written in Go) then **_Go_** and check the project out!
 
 ## License
 
