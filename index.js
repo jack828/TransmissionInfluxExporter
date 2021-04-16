@@ -1,3 +1,4 @@
+/* eslint-disable no-console */
 import os from 'os'
 import yargs from 'yargs'
 import Transmission from 'transmission'
@@ -13,7 +14,7 @@ const influx = new Influx.InfluxDB({
 
 const tags = { hostname: os.hostname() }
 
-;(async function () {
+const collectStats = async () => {
   const databases = await influx.getDatabaseNames()
   if (!databases.includes(dbName)) {
     await influx.createDatabase(dbName)
@@ -68,14 +69,49 @@ const tags = { hostname: os.hostname() }
         tags
       }
     ])
-    console.log('done')
-  })
-})()
+    console.log('done stats')
 
-// transmission.get((error, r) => {
-// if (error) throw error
-// const { torrents } = r
-// console.log(r)
-// // console.dir(r, { depth: null, colors: true })
-// })
-//
+    transmission.get(async (error, r) => {
+      if (error) throw error
+      const { torrents } = r
+      console.dir(torrents[0], { depth: 1, colors: true })
+      // return
+      // eslint-disable-next-line
+      await influx.writeMeasurement(
+        'torrent',
+        torrents.map(
+          ({
+            name,
+            hashString,
+            status,
+            addedDate,
+            files,
+            isFinished,
+            percentDone,
+            uploadRatio,
+            uploadedEver,
+            rateDownload,
+            rateUpload
+          }) => ({
+            fields: {
+              status,
+              addedDate,
+              finished: isFinished,
+              files: files.length,
+              percentDone,
+              ratio: uploadRatio,
+              uploadedEver,
+              downloadSpeed: rateDownload,
+              uploadSpeed: rateUpload
+            },
+            tags: { ...tags, name, hash: hashString }
+          })
+        )
+      )
+      console.log('done torrents')
+      // console.dir(r, { depth: null, colors: true })
+    })
+  })
+}
+
+collectStats()
